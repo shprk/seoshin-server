@@ -1,0 +1,31 @@
+# dependencies
+node_modules
+
+# build
+/dist
+/build
+
+# prisma
+/generated/prisma
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs / coverage / cache
+logs
+*.log
+npm-debug.log*
+coverage
+.nyc_output
+.turbo
+
+# OS / IDE / agents
+.DS_Store
+.idea
+.vscode
+.agents
+.claude
+.cursor
+.windsurf
