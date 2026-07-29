@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Task" DROP COLUMN "letterArrived",
+ADD COLUMN "address" TEXT NOT NULL DEFAULT '',
+ADD COLUMN "letter1Arrived" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN "letter2Arrived" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN "letter3Arrived" BOOLEAN NOT NULL DEFAULT false;

@@ -1,13 +1,47 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         String   @default("admin")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Customer {
+  id            String   @id @default(cuid())
+  name          String
+  participantNo String   @unique
+  phone         String
+  ageGroup      String
+  memo          String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Task {
+  id                   String   @id @default(cuid())
+  name                 String
+  participantNo        String
+  matchedParticipantNo String?
+  address              String   @default("")
+  letter1Arrived       Boolean  @default(false)
+  letter2Arrived       Boolean  @default(false)
+  letter3Arrived       Boolean  @default(false)
+  barcode              String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([barcode])
 }
