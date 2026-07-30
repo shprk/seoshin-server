@@ -1,4 +1,10 @@
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
@@ -9,15 +15,28 @@ export class CreateCustomerDto {
   @MinLength(1)
   participantNo: string;
 
+  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
-  @MinLength(1)
-  phone: string;
+  matchedParticipantNo?: string | null;
 
+  @IsOptional()
   @IsString()
-  @MinLength(1)
-  ageGroup: string;
+  address?: string;
 
   @IsOptional()
   @IsString()
   memo?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  letter1Arrived?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  letter2Arrived?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  letter3Arrived?: boolean;
 }

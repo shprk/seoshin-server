@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
 
 const taskSelect = {
   id: true,
@@ -9,10 +8,6 @@ const taskSelect = {
   participantNo: true,
   matchedParticipantNo: true,
   address: true,
-  letter1Arrived: true,
-  letter2Arrived: true,
-  letter3Arrived: true,
-  barcode: true,
   createdAt: true,
 } as const;
 
@@ -45,20 +40,6 @@ export class TasksService {
     return task;
   }
 
-  async findByBarcode(barcode: string) {
-    const task = await this.prisma.task.findFirst({
-      where: { barcode },
-      select: taskSelect,
-      orderBy: { createdAt: 'desc' },
-    });
-
-    if (!task) {
-      throw new NotFoundException('Task not found');
-    }
-
-    return task;
-  }
-
   create(dto: CreateTaskDto) {
     return this.prisma.task.create({
       data: {
@@ -66,22 +47,13 @@ export class TasksService {
         participantNo: dto.participantNo,
         matchedParticipantNo: dto.matchedParticipantNo ?? null,
         address: dto.address ?? '',
-        letter1Arrived: dto.letter1Arrived ?? false,
-        letter2Arrived: dto.letter2Arrived ?? false,
-        letter3Arrived: dto.letter3Arrived ?? false,
-        barcode: dto.barcode,
       },
       select: taskSelect,
     });
   }
 
-  async update(id: string, dto: UpdateTaskDto) {
+  async remove(id: string) {
     await this.findOne(id);
-
-    return this.prisma.task.update({
-      where: { id },
-      data: dto,
-      select: taskSelect,
-    });
+    await this.prisma.task.delete({ where: { id } });
   }
 }

@@ -1,5 +1,4 @@
 import {
-  IsBoolean,
   IsOptional,
   IsString,
   MinLength,
@@ -23,20 +22,4 @@ export class CreateTaskDto {
   @IsOptional()
   @IsString()
   address?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  letter1Arrived?: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  letter2Arrived?: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  letter3Arrived?: boolean;
-
-  @IsString()
-  @MinLength(1)
-  barcode: string;
 }

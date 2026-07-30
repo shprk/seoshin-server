@@ -1,15 +1,15 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
-  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
@@ -22,11 +22,6 @@ export class TasksController {
     return this.tasksService.findAll();
   }
 
-  @Get('by-barcode/:barcode')
-  findByBarcode(@Param('barcode') barcode: string) {
-    return this.tasksService.findByBarcode(barcode);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(id);
@@ -37,8 +32,9 @@ export class TasksController {
     return this.tasksService.create(dto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateTaskDto) {
-    return this.tasksService.update(id, dto);
+  @Delete(':id')
+  @HttpCode(204)
+  async remove(@Param('id') id: string) {
+    await this.tasksService.remove(id);
   }
 }

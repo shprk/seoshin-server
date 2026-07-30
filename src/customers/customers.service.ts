@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -7,8 +12,11 @@ const customerSelect = {
   id: true,
   name: true,
   participantNo: true,
-  phone: true,
-  ageGroup: true,
+  matchedParticipantNo: true,
+  address: true,
+  letter1Arrived: true,
+  letter2Arrived: true,
+  letter3Arrived: true,
   memo: true,
   createdAt: true,
 } as const;
@@ -42,26 +50,49 @@ export class CustomersService {
     return customer;
   }
 
-  create(dto: CreateCustomerDto) {
-    return this.prisma.customer.create({
-      data: {
-        name: dto.name,
-        participantNo: dto.participantNo,
-        phone: dto.phone,
-        ageGroup: dto.ageGroup,
-        memo: dto.memo ?? '',
-      },
-      select: customerSelect,
-    });
+  async create(dto: CreateCustomerDto) {
+    try {
+      return await this.prisma.customer.create({
+        data: {
+          name: dto.name,
+          participantNo: dto.participantNo,
+          matchedParticipantNo: dto.matchedParticipantNo ?? null,
+          address: dto.address ?? '',
+          memo: dto.memo ?? '',
+          letter1Arrived: dto.letter1Arrived ?? false,
+          letter2Arrived: dto.letter2Arrived ?? false,
+          letter3Arrived: dto.letter3Arrived ?? false,
+        },
+        select: customerSelect,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Participant number already exists');
+      }
+      throw error;
+    }
   }
 
   async update(id: string, dto: UpdateCustomerDto) {
     await this.findOne(id);
 
-    return this.prisma.customer.update({
-      where: { id },
-      data: dto,
-      select: customerSelect,
-    });
+    try {
+      return await this.prisma.customer.update({
+        where: { id },
+        data: dto,
+        select: customerSelect,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Participant number already exists');
+      }
+      throw error;
+    }
   }
 }
