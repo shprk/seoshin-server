@@ -22,6 +22,17 @@ const customerSelect = {
   createdAt: true,
 } as const;
 
+const UPDATABLE_FIELDS = [
+  'name',
+  'ageGroup',
+  'matchedParticipantNo',
+  'address',
+  'memo',
+  'letter1Arrived',
+  'letter2Arrived',
+  'letter3Arrived',
+] as const satisfies readonly (keyof UpdateCustomerDto)[];
+
 @Injectable()
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -81,20 +92,19 @@ export class CustomersService {
   async update(id: string, dto: UpdateCustomerDto) {
     await this.findOne(id);
 
-    try {
-      return await this.prisma.customer.update({
-        where: { id },
-        data: dto,
-        select: customerSelect,
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException('Participant number already exists');
+    // 전역 ValidationPipe 설정에 의존하지 않도록 여기서도 수정 가능한 필드만 추린다.
+    // id / participantNo / createdAt 은 어떤 경우에도 갱신 대상이 될 수 없다.
+    const data: Prisma.CustomerUpdateInput = {};
+    for (const field of UPDATABLE_FIELDS) {
+      if (dto[field] !== undefined) {
+        Object.assign(data, { [field]: dto[field] });
       }
-      throw error;
     }
+
+    return this.prisma.customer.update({
+      where: { id },
+      data,
+      select: customerSelect,
+    });
   }
 }
