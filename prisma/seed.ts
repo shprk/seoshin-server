@@ -8,7 +8,32 @@ const adapter = new PrismaPg({
 });
 const prisma = new PrismaClient({ adapter });
 
+const LOCAL_DB_HOSTS = ['localhost', '127.0.0.1'];
+
+// 이 스크립트는 Task 테이블을 통째로 비우므로 원격 DB에서는 기본적으로 중단한다.
+function assertSeedAllowed() {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error('DATABASE_URL must be set');
+  }
+
+  const { hostname } = new URL(url);
+  if (
+    LOCAL_DB_HOSTS.includes(hostname) ||
+    process.env.ALLOW_REMOTE_SEED === 'true'
+  ) {
+    return;
+  }
+
+  throw new Error(
+    `Refusing to seed non-local database (${hostname}). ` +
+      'This script deletes every Task row. Set ALLOW_REMOTE_SEED=true to override.',
+  );
+}
+
 async function main() {
+  assertSeedAllowed();
+
   const email = process.env.ADMIN_EMAIL;
   const password = process.env.ADMIN_PASSWORD;
 
@@ -41,6 +66,7 @@ async function main() {
       name: '홍길동',
       participantNo: 'A-001',
       matchedParticipantNo: 'B-014',
+      ageGroup: '30대',
       address: '서울시 강남구 테헤란로 1',
       letter1Arrived: true,
       letter2Arrived: false,
@@ -51,6 +77,7 @@ async function main() {
       name: '김서신',
       participantNo: 'B-014',
       matchedParticipantNo: 'A-001',
+      ageGroup: '40대',
       address: '부산시 해운대구 센텀로 2',
       letter1Arrived: false,
       letter2Arrived: false,
@@ -61,6 +88,7 @@ async function main() {
       name: '이하늘',
       participantNo: 'C-003',
       matchedParticipantNo: null,
+      ageGroup: '60대 이상',
       address: '대구시 중구 동성로 3',
       letter1Arrived: false,
       letter2Arrived: true,

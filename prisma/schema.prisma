@@ -24,6 +24,7 @@ model Customer {
   name                 String
   participantNo        String   @unique
   matchedParticipantNo String?
+  ageGroup             String?
   address              String   @default("")
   letter1Arrived       Boolean  @default(false)
   letter2Arrived       Boolean  @default(false)

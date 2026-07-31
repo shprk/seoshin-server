@@ -1,10 +1,13 @@
 import {
   IsBoolean,
+  IsIn,
   IsOptional,
   IsString,
   MinLength,
   ValidateIf,
 } from 'class-validator';
+import { AGE_GROUPS, AGE_GROUP_VALIDATION_MESSAGE } from './age-group';
+import type { AgeGroup } from './age-group';
 
 export class CreateCustomerDto {
   @IsString()
@@ -19,6 +22,9 @@ export class CreateCustomerDto {
   @ValidateIf((_, value) => value !== null)
   @IsString()
   matchedParticipantNo?: string | null;
+
+  @IsIn(AGE_GROUPS, { message: AGE_GROUP_VALIDATION_MESSAGE })
+  ageGroup: AgeGroup;
 
   @IsOptional()
   @IsString()
