@@ -72,6 +72,7 @@ async function main() {
       letter2Arrived: false,
       letter3Arrived: false,
       memo: 'VIP',
+      email: 'hong@example.com',
     },
     {
       name: '김서신',
@@ -83,6 +84,7 @@ async function main() {
       letter2Arrived: false,
       letter3Arrived: false,
       memo: '',
+      email: '',
     },
     {
       name: '이하늘',
@@ -94,6 +96,7 @@ async function main() {
       letter2Arrived: true,
       letter3Arrived: false,
       memo: '오전 방문',
+      email: '',
     },
   ];
 

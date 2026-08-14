@@ -41,6 +41,10 @@ export class UpdateCustomerDto {
   memo?: string;
 
   @ValidateIf(isProvided)
+  @IsString()
+  email?: string;
+
+  @ValidateIf(isProvided)
   @IsBoolean()
   letter1Arrived?: boolean;
 

@@ -35,6 +35,10 @@ export class CreateCustomerDto {
   memo?: string;
 
   @IsOptional()
+  @IsString()
+  email?: string;
+
+  @IsOptional()
   @IsBoolean()
   letter1Arrived?: boolean;
 

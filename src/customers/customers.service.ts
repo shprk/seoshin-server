@@ -19,6 +19,7 @@ const customerSelect = {
   letter2Arrived: true,
   letter3Arrived: true,
   memo: true,
+  email: true,
   createdAt: true,
 } as const;
 
@@ -28,6 +29,7 @@ const UPDATABLE_FIELDS = [
   'matchedParticipantNo',
   'address',
   'memo',
+  'email',
   'letter1Arrived',
   'letter2Arrived',
   'letter3Arrived',
@@ -72,6 +74,7 @@ export class CustomersService {
           ageGroup: dto.ageGroup,
           address: dto.address ?? '',
           memo: dto.memo ?? '',
+          email: dto.email ?? '',
           letter1Arrived: dto.letter1Arrived ?? false,
           letter2Arrived: dto.letter2Arrived ?? false,
           letter3Arrived: dto.letter3Arrived ?? false,

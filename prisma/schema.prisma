@@ -30,6 +30,7 @@ model Customer {
   letter2Arrived       Boolean  @default(false)
   letter3Arrived       Boolean  @default(false)
   memo                 String   @default("")
+  email                String   @default("")
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 }
